@@ -24,27 +24,29 @@ getwd()
 # Bajar 10 años de enoe
 #Sociodemográficos
 
-for(i in 2005: 2015)
+for(i in 2006: 2015)
 {
       for (j in 1:4) 
       {
-            print(str_c("Bajando año-trimestre:  ",(str_c(i,j))))
-            download(str_c(str_c(str_c(str_c(URL,i),"/trim"),str_c(j,"/sdemt")), str_pad(str_c(j,substring (i,3,4)), 2, "left", "0"), ".zip&ht=02"), str_c("data/", str_c(i,j)), mode = "wb")
+            #print(str_c("Bajando año-trimestre:  ",(str_c(i,j))))
+            #download(str_c(str_c(str_c(str_c(URL,i),"/trim"),str_c(j,"/sdemt")), str_pad(str_c(j,substring (i,3,4)), 2, "left", "0"), ".zip&ht=02"), str_c("data/", str_c(i,j)), mode = "wb")
             unzip(str_c("data/", str_c(i,j)), exdir = "data")
             #file.remove(str_c("data/"), str_c(i,j))#esto no funciona por ahora 
       }
 }
 
-########################################### Lo viejo
+########################################### 
 setwd("E:/Proyectos R/ENOE/data")
 ENOE <- read.dbf("sdemt415.dbf")
 setwd("E:/Proyectos R/ENOE")
 
 #UNIVERSO para el uso de las variables precodificadas se deben de utilizar 
-#los siguientes criterios R_DEF=00 Y C_RES=1 ó 3 y EDA 15 a 98 AÑOS
+#los siguientes criterios R_DEF=00 Y C_RES=1 ó 3 y EDA >= 14 y <= 98 
+
 ENOE <- filter(ENOE, R_DEF == "00") #00 Resultado definitivo de la entrevista, entrevista completa
 ENOE$EDA<-as.numeric(ENOE$EDA)
-ENOE <- filter(ENOE, EDA >= 15 | EDA <=98)
+ENOE <- filter(ENOE, EDA >= 14)
+ENOE <- filter(ENOE, EDA <=98)
 ENOE <- filter(ENOE, C_RES == 1 | C_RES == 3) #Condici?n de la residencia, 1 Residente Habitual, 3 Nuevo residente 
 # Nuevas variables
 ENOE<- mutate(ENOE, INF = ifelse(TUE2==5,1,0))
@@ -60,9 +62,6 @@ ENOE$CLASE1 <- factor(ENOE$CLASE1, labels = c("No Clasificado", "PEA", "No PEA" 
 ENOE$ING7C<- factor(ENOE$ING7C, labels =c("No Clas","Hasta 1 SM", "1-2 SM", "2-3 SM", "3-5 SM", "Más de 5 SM", "No recibe ingresos", "No especificado"))  #clasificación de la población ocupada por nivel de ingreso 
 ENOE$MEDICA5C <- factor(ENOE$MEDICA5C, labels = c("No Clas", "Sin prestaciones", "Solo acceso a instituciones de salud", "Acceso a inst. de salud y otras prest.", "no tiene acceso, pero si otras prestaciones", "No especificado" ))
 ENOE$AMBITO2 <- factor (ENOE$AMBITO2, labels = c("no clas", "Sin Establecimiento" , "Con establecimiento", "Pequeños establecimientos" , "Medianos Establecimientos", "Grandes Establecimientos", "Gobierno", "Otros") )
-
-table(ENOE$AMBITO2)
-
 ENOE<- mutate(ENOE, Mujer = ifelse(SEX == "MUJER",1,0)) #Mujeres
 ENOE<- mutate(ENOE, Mujer_Pob = FAC * Mujer) #Mujeres multiplicadas por el factor de poblacion
 ENOE<- mutate(ENOE,Hombre = ifelse(SEX == "HOMBRE",1,0)) #Hombres
@@ -72,81 +71,65 @@ ENOE<- mutate(ENOE, OCUPADA = ifelse(CLASE2 ==1,1,0)) #Poblacion ocupada, para s
 ENOE<- mutate(ENOE, OCUPADA_Pob = OCUPADA * FAC) #Poblacion ocupada, para sacar ingresos promedio
 ENOE<- mutate(ENOE, HRSOCUP_Pob = HRSOCUP * FAC)
 ENOE<- mutate(ENOE, ANIOS_ESC_Pob = ANIOS_ESC * FAC)
+ENOE<- mutate(ENOE, SUB_O_POB = SUB_O * FAC)
+#Codificación de las variables de escolaridad
 ENOE$CS_P13_1<- factor(ENOE$CS_P13_1, labels = c("Ninguna", "Preescolar", "Primaria", "Secundaria","Preparatoria o bach", "Normal", "Carrera técnica", "Profesional", "Maestría", "Doctorado", "No sabe"))
-ENOE$ <- mutate(ENOE, ESC_NINGUNA   =  #Escolaridad de la población
-                      ENOE$ <- mutate(ENOE, ESC_NINGUNA   =  #Escolaridad de la población
-                                            
-                                            CS_P13_1[which(ENOE$CS_P13_1==1)] 
-                                      table(ENOE$CS_P13_1, exclude = NULL) #tabla con los datos sin el factor de expansión
-                                      
-                                      ENOE$Preescolar<-ifelse(ENOE$CS_P13_1 == "Preescolar",1,0)
-                                      ENOE$Preescolar<-ENOE$Preescolar * ENOE$FAC
-                                      
-                                      sum(ENOE$Preescolar, na.rm = TRUE)
-                                      table(ENOE$CS_P13_1)
-                                      sum(ENOE$FAC)
-                                      
-                                      
-                                      #tablas de escolaridad de la población con porcentaje 
-                                      
-                                      sum(
-                                            
-                                            
-                                      )
-                                      ENOE$Preescolar<- ENOE$Preescolar * ENOE$FAC
-                                      
-                                      
-                                      
-                                      ENOE$Preescolar
-                                      
-                                      
-                                      ENOE$Preescolar<-    ifelse(ENOE$CS_P13_1 == "Preescolar",1,0)
-                                      table(ENOE$Preescolar)
-                                      
-                                      
-                                      
-                                      ENOE$CS_P13_1                        
-                                      
-                                      ENOE<- mutate(ENOE, SUB_O_POB = SUB_O * FAC)
-                                      
-                                      #Ingresos por edad y escolaridad
-                                      #INGOCUP Ingreso mensual
-                                      #HRSOCUP Horas trabajadas a la semana 
-                                      IngEdaEsc <-ggplot(ENOE[ENOE$CS_P13_1=1], aes(EDA, INGOCUP, fill = factor (SEX))) #edad, Ingreso mensual, sexo, para personas con preescolar
-                                      
-                                      table(ENOE$CS_P13_1)
-                                      
-                                      
-                                      #empleo por escolaridad
-                                      
-                                      
-                                      
-                                      #Boxplot de ingreso por hora a nivel nacional utilizando logaritmos, el logaritmo muestra valores menores a uno como negativos y no muestra a los que reportan ingreso de cero.   El boxplot muestra la mediana y los cuartiles, cada cuartil contiene alrededor del 25% de la poblaci?n. 
-                                      
-                                      NacLog <- ggplot(ENOE, aes(CS_P13_1, log(ING_X_HRS), fill = factor(SEX)))
-                                      NacLog <- NacLog +geom_boxplot(aes(weight = FAC)) #El factor de expansi?n lo calcula ggplot 
-                                      NacLog <- NacLog + labs(title = "Ingreso por hora (Log), a nivel Nacional" , x = "Escolaridad" , y = "Ingreso (log)")
-                                      ggsave("graphs/NacLog.png", plot = NacLog, dpi = 500, width = 14, height = 11)
-                                      
-                                      
-                                      #Podemos obtener estos resultados a nivel Estatal para cualquier estado 
-                                      AGS<- ggplot(data =subset(ENOE, Estado =="AGS"), aes(CS_P13_1, log(ING_X_HRS), fill = factor(SEX)))+ geom_boxplot(aes(weight = FAC))
-                                      AGS <-AGS + labs(title = "Ingreso por hora (Log), a nivel Nacional" , x = "Escolaridad" , y = "Ingreso (log)")
-                                      AGS
-                                      
-                                      #para sacar resultados a nivel estatal
-                                      ZAC<- ggplot(data =subset(ENOE, Estado =="AGS"), aes(CS_P13_1, log(ING_X_HRS), fill = factor(SEX)))
-                                      ZAC<- ZAC+ geom_boxplot(aes(weight = FAC))
-                                      ZAC <-ZAC + labs(title = "Ingreso por hora (Log), en Aguascalientes" , x = "Escolaridad" , y = "Ingreso (log)")
-                                      ZAC
-                                      
-                                      
-                                      #Del distrito Federal
-                                      ```{r, echo = FALSE, message = FALSE, warning = F}
-                                      DF <- ggplot(data =subset(ENOE, Estado =="DF"), aes(CS_P13_1, log(ING_X_HRS), fill = factor(SEX)))
-                                      DF <- DF + geom_boxplot(aes(weight = FAC))
-                                      DF <-DF + labs(title = "Ingreso por hora (Log), en el Distrito Federal" , x = "Escolaridad" , y = "Ingreso (log)")
-                                      DF
+#Para cada nivel de escolaridad
+ENOE$Ninguna<-ifelse(ENOE$CS_P13_1 == "Ninguna",1,0) #Ninguna
+ENOE$Ninguna<-ENOE$Ninguna * ENOE$FAC
+ENOE$Preescolar<-ifelse(ENOE$CS_P13_1 == "Preescolar",1,0)
+ENOE$Preescolar<-ENOE$Preescolar * ENOE$FAC
+ENOE$Primaria<-ifelse(ENOE$CS_P13_1 == "Primaria",1,0)
+ENOE$Primaria<-ENOE$Primaria * ENOE$FAC
+ENOE$Secundaria<-ifelse(ENOE$CS_P13_1 == "Secundaria",1,0)
+ENOE$Secundaria<-ENOE$Secundaria * ENOE$FAC
+ENOE$Preparatoria<-ifelse(ENOE$CS_P13_1 == "Preparatoria o bach",1,0)
+ENOE$Preparatoria<-ENOE$Preparatoria * ENOE$FAC
+ENOE$Normal<-ifelse(ENOE$CS_P13_1 == "Normal",1,0)
+ENOE$Normal<-ENOE$Normal * ENOE$FAC
+ENOE$Tecnica<-ifelse(ENOE$CS_P13_1 == "Carrera técnica",1,0)
+ENOE$Tecnica<-ENOE$Tecnica * ENOE$FAC
+ENOE$Profesional<-ifelse(ENOE$CS_P13_1 == "Profesional",1,0)
+ENOE$Profesional<-ENOE$Profesional * ENOE$FAC
+ENOE$Maestria<-ifelse(ENOE$CS_P13_1 == "Maestría",1,0)
+ENOE$Maestria<-ENOE$Maestria * ENOE$FAC
+ENOE$Doctorado<-ifelse(ENOE$CS_P13_1 == "Doctorado",1,0)
+ENOE$Doctorado<-ENOE$Doctorado * ENOE$FAC
+ENOE$NS<-ifelse(ENOE$CS_P13_1 == "No sabe",1,0)
+ENOE$NS<-ENOE$NS * ENOE$FAC
+#hombres y mujeres con maestría
+table(ENOE$CS_P13_1, exclude = NULL) #tabla con los datos sin el factor de expansión
+#gráfica de 
+IngEdaEsc <- ggplot(ENOE[ENOE$CS_P13_1=="Primaria",], aes(EDA, INGOCUP)) #edad, Ingreso mensual, sexo, para personas con preescolar
+IngEdaEsc <- IngEdaEsc + geom_smooth()
+IngEdaEsc
+
+
+
+table(ENOE$CS_P13_1)
+#Boxplot de ingreso por hora a nivel nacional utilizando logaritmos, el logaritmo muestra valores menores a uno como negativos y no muestra a los que reportan ingreso de cero.   El boxplot muestra la mediana y los cuartiles, cada cuartil contiene alrededor del 25% de la poblaci?n. 
+NacLog <- ggplot(ENOE, aes(CS_P13_1, log(ING_X_HRS), fill = factor(SEX)))
+NacLog <- NacLog +geom_boxplot(aes(weight = FAC)) #El factor de expansi?n lo calcula ggplot 
+NacLog <- NacLog + labs(title = "Ingreso por hora (Log), a nivel Nacional" , x = "Escolaridad" , y = "Ingreso (log)")
+ggsave("graphs/NacLog.png", plot = NacLog, dpi = 500, width = 14, height = 11)
+
+
+
+#Podemos obtener estos resultados a nivel Estatal para cualquier estado 
+AGS<- ggplot(data =subset(ENOE, Estado =="AGS"), aes(CS_P13_1, log(ING_X_HRS), fill = factor(SEX)))+ geom_boxplot(aes(weight = FAC))
+AGS <-AGS + labs(title = "Ingreso por hora (Log), a nivel Nacional" , x = "Escolaridad" , y = "Ingreso (log)")
+AGS
+#para sacar resultados a nivel estatal
+ZAC<- ggplot(data =subset(ENOE, Estado =="AGS"), aes(CS_P13_1, log(ING_X_HRS), fill = factor(SEX)))
+ZAC<- ZAC+ geom_boxplot(aes(weight = FAC))
+ZAC <-ZAC + labs(title = "Ingreso por hora (Log), en Aguascalientes" , x = "Escolaridad" , y = "Ingreso (log)")
+ZAC
+#Del distrito Federal
+```{r, echo = FALSE, message = FALSE, warning = F}
+DF <- ggplot(data =subset(ENOE, Estado =="DF"), aes(CS_P13_1, log(ING_X_HRS), fill = factor(SEX)))
+DF <- DF + geom_boxplot(aes(weight = FAC))
+DF <-DF + labs(title = "Ingreso por hora (Log), en el Distrito Federal" , x = "Escolaridad" , y = "Ingreso (log)")
+DF
                                       ```
                                       
                                       #De interpretaci?n m?s directa se puede obtener un boxplot con los ingresos por hora en pesos por escolaridad. Estos son los resultados a nivel nacional. Esta forma de presentar los resultados incluye a aquellas personas que declaran tener ingresos de cero que son una basta mayoria, por ello es frecuente que la mediana se grafique en cero. Se recorta la gr?fica para no mostrar a todos los ouliers y poder apreciar las barras. 
