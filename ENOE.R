@@ -15,7 +15,7 @@ library("broom")
 library("tidyr")
 library("maptools")
 library("utils")
-library("foreign") #Si algun paquete no esta instalado
+library("foreign")
 library("RColorBrewer")
 library("survey")
 #library(choroplethr)
@@ -99,21 +99,150 @@ ENOE$NS<-ifelse(ENOE$CS_P13_1 == "No sabe",1,0)
 ENOE$NS<-ENOE$NS * ENOE$FAC
 #hombres y mujeres con maestría
 table(ENOE$CS_P13_1, exclude = NULL) #tabla con los datos sin el factor de expansión
-#gráfica de 
-IngEdaEsc <- ggplot(ENOE[ENOE$CS_P13_1=="Primaria",], aes(EDA, INGOCUP)) #edad, Ingreso mensual, sexo, para personas con preescolar
-IngEdaEsc <- IngEdaEsc + geom_smooth()
-IngEdaEsc
+
+ENOEB <- ENOE[ENOE$EDA <=75,] #ENOEB restringe la edad de 14 a 75 años para comparación de ingreso salarial 
+
+
+
+
+###Ninguna
+Ninguna <- ggplot(ENOEB[ENOEB$CS_P13_1=="Ninguna",], aes(EDA, INGOCUP, color = SEX)) #edad, Ingreso mensual, sexo, para personas con preescolar
+Ninguna <- Ninguna + geom_smooth(aes(weight = FAC))
+Ninguna <- Ninguna + xlab("Edad (14 a 75 años)") +ylab("Ingreso Mensual") + ggtitle("Ingreso Mensual declarado por Escolaridad (Ninguna) y Sexo(ENOE, IV 2015) ")
+ggsave("graphs/Ing_sexo_ninguna.png", plot = Primaria, dpi = 500, width = 14, height = 11)
+
+###
+Primaria <- ggplot(ENOEB[ENOEB$CS_P13_1=="Primaria",], aes(EDA, INGOCUP, color = SEX)) #edad, Ingreso mensual, sexo, para personas con preescolar
+Primaria <- Primaria + geom_smooth(aes(weight = FAC))
+Primaria <- Primaria + xlab("Edad (14 a 75 años)") +ylab("Ingreso Mensual") + ggtitle("Ingreso Mensual declarado por Escolaridad (Primaria) y Sexo(ENOE, IV 2015) ")
+ggsave("graphs/Ing_sexo_primaria.png", plot = Primaria, dpi = 500, width = 14, height = 11)
+
+###
+Secundaria <- ggplot(ENOEB[ENOEB$CS_P13_1=="Secundaria",], aes(EDA, INGOCUP, color = SEX)) #edad, Ingreso mensual, sexo, para personas con preescolar
+Secundaria <- Secundaria + geom_smooth(aes(weight = FAC))
+Secundaria <- Secundaria + xlab("Edad (14 a 75 años)") +ylab("Ingreso Mensual")  + ggtitle("Ingreso Mensual declarado por Escolaridad (Secundaria) y Sexo(ENOE, IV 2015) ")
+ggsave("graphs/Ing_sexo_secundaria.png", plot = Primaria, dpi = 500, width = 14, height = 11)
+
+###
+Tecnica <- ggplot(ENOEB[ENOEB$CS_P13_1=="Tecnica",], aes(EDA, INGOCUP, color = SEX)) #edad, Ingreso mensual, sexo, para personas con preescolar
+Tecnica <- Tecnica + geom_smooth(aes(weight = FAC))
+Tecnica <- Tecnica + xlab("Edad (14 a 75 años)") +ylab("Ingreso Mensual")  + ggtitle("Ingreso Mensual declarado por Escolaridad (Carrera Técnica) y Sexo(ENOE, IV 2015) ")
+ggsave("graphs/Ing_sexo_secundaria.png", plot = Primaria, dpi = 500, width = 14, height = 11)
+
+####
+Preparatoria <- ggplot(ENOEB[ENOEB$CS_P13_1=="Preparatoria o bach",], aes(EDA, INGOCUP, color = SEX)) #edad, Ingreso mensual, sexo, para personas con preescolar
+Preparatoria <- Preparatoria + geom_smooth(aes(weight = FAC))
+Preparatoria <- Preparatoria + xlab("Edad (14 a 75 años)") +ylab("Ingreso Mensual")  + ggtitle("Ingreso Mensual declarado por Escolaridad (Preparatoria) y Sexo(ENOE, IV 2015) ")
+Preparatoria
+ggsave("graphs/Ing_sexo_preparatoria.png", plot = Primaria, dpi = 500, width = 14, height = 11)
+
+#####
+Profesional <- ggplot(ENOEB[ENOEB$CS_P13_1=="Profesional",], aes(EDA, INGOCUP, color = SEX)) #edad, Ingreso mensual, sexo, para personas con preescolar
+Profesional <- Profesional + geom_smooth(aes(weight = FAC))
+Profesional <- Profesional + xlab("Edad (14 a 75 años)") +ylab("Ingreso Mensual")  + ggtitle("Ingreso Mensual declarado por Escolaridad (Profesional) y Sexo(ENOE, IV 2015) ")
+ggsave("graphs/Ing_sexo_Profesional.png", plot = Primaria, dpi = 500, width = 14, height = 11)
+
+Maestria <- ggplot(ENOEB[ENOEB$CS_P13_1=="Maestria",], aes(EDA, INGOCUP, color = SEX)) #edad, Ingreso mensual, sexo, para personas con preescolar
+Maestria <- Maestria + geom_smooth(aes(weight = FAC))
+Maestria <- Maestria + xlab("Edad (14 a 75 años)") +ylab("Ingreso Mensual")  + ggtitle("Ingreso Mensual declarado por Escolaridad (Maestría) y Sexo(ENOE, IV 2015) ")
+ggsave("graphs/Ing_sexo_Maestria.png", plot = Primaria, dpi = 500, width = 14, height = 11)
+
+Doctorado <- ggplot(ENOEB[ENOEB$CS_P13_1=="Doctorado",], aes(EDA, INGOCUP, color = SEX)) #edad, Ingreso mensual, sexo, para personas con preescolar
+Doctorado <- Doctorado + geom_boxplot(aes(weight = FAC))
+Doctorado <- Doctorado+ xlab("Edad (14 a 75 años)") +ylab("Ingreso Mensual")  + ggtitle("Ingreso Mensual declarado por Escolaridad (Doctorado) y Sexo(ENOE, IV 2015) ")
+Doctorado
+
+ggsave("graphs/Ing_sexo_Doctorado.png", plot = Doctorado, dpi = 500, width = 14, height = 11)
+
+
+
+
+sum(table(ENOE$CS_P13_1))
+
+
+
+
+
+for(i in 2006: 2015)
+{} 
+
+Todo <- ggplot(ENOEB, aes(EDA, INGOCUP, color = CS_P13_1)) #edad, Ingreso mensual, sexo, para personas con preescolar
+Todo <- Todo + geom_smooth(aes(weight = FAC))
+Todo <- Todo + xlab("Edad (mayores de 14 años)") +ylab("Ingreso Mensual")
+Todo
+export.png
+
+
+#personas que ganan 0, hombres mujeres
+#Grado de escolaridad por población y sexo
+table(ENOE$CS_P13_1)
+#tabla con los datos (número de personas en cada categoria )
+#por ocupaci[on]
+#quitando a los que ganan 0
+#hist(ENOE$EDA)
+ENOEMUJ <- ENOE[ENOE$SEX == "MUJER",]
+ENOEHOM <- ENOE[ENOE$SEX == "HOMBRE",]
+
+a1<-sum(ENOEMUJ[ENOEMUJ$CS_P13_1=="Ninguna",]$FAC)
+a2<-sum(ENOEHOM[ENOEHOM$CS_P13_1=="Ninguna",]$FAC)
+a3<-sum(ENOE[ENOE$CS_P13_1=="Ninguna",]$FAC)
+a4<-sum(ENOEMUJ[ENOEMUJ$CS_P13_1=="Preescolar",]$FAC)
+a5<-sum(ENOEHOM[ENOEHOM$CS_P13_1=="Preescolar",]$FAC)
+a6<-sum(ENOE[ENOE$CS_P13_1=="Preescolar",]$FAC)
+a7<-sum(ENOEMUJ[ENOEMUJ$CS_P13_1=="Primaria",]$FAC)
+a8<-sum(ENOEHOM[ENOEHOM$CS_P13_1=="Primaria",]$FAC)
+a9<-sum(ENOE[ENOE$CS_P13_1=="Primaria",]$FAC)
+a10<-sum(ENOEMUJ[ENOEMUJ$CS_P13_1=="Secundaria",]$FAC)
+a11<-sum(ENOEHOM[ENOEHOM$CS_P13_1=="Secundaria",]$FAC)
+a12<-sum(ENOE[ENOE$CS_P13_1=="Secundaria",]$FAC)
+a13<-sum(ENOEMUJ[ENOEMUJ$CS_P13_1=="Preparatoria o bach",]$FAC)
+a14<-sum(ENOEHOM[ENOEHOM$CS_P13_1=="Preparatoria o bach",]$FAC)
+a15<-sum(ENOE[ENOE$CS_P13_1=="Preparatoria o bach",]$FAC)
+a16<-sum(ENOEMUJ[ENOEMUJ$CS_P13_1=="Normal",]$FAC)
+a17<-sum(ENOEHOM[ENOEHOM$CS_P13_1=="Normal",]$FAC)
+a18<-sum(ENOE[ENOE$CS_P13_1=="Normal",]$FAC)
+a19<-sum(ENOEMUJ[ENOEMUJ$CS_P13_1=="Carrera técnica",]$FAC)
+a20<-sum(ENOEHOM[ENOEHOM$CS_P13_1=="Carrera técnica",]$FAC)
+a21<-sum(ENOE[ENOE$CS_P13_1=="Carrera técnica",]$FAC)
+a22<-sum(ENOEMUJ[ENOEMUJ$CS_P13_1=="Profesional",]$FAC)
+a23<-sum(ENOEHOM[ENOEHOM$CS_P13_1=="Profesional",]$FAC)
+a24<-sum(ENOE[ENOE$CS_P13_1=="Profesional",]$FAC)
+a25<-sum(ENOEMUJ[ENOEMUJ$CS_P13_1=="Maestría",]$FAC)
+a26<-sum(ENOEHOM[ENOEHOM$CS_P13_1=="Maestría",]$FAC)
+a27<-sum(ENOE[ENOE$CS_P13_1=="Maestría",]$FAC)
+a28<-sum(ENOEMUJ[ENOEMUJ$CS_P13_1=="Doctorado",]$FAC)
+a29<-sum(ENOEHOM[ENOEHOM$CS_P13_1=="Doctorado",]$FAC)
+a30<-sum(ENOE[ENOE$CS_P13_1=="Doctorado",]$FAC)
+a31<-sum(ENOEMUJ[ENOEMUJ$CS_P13_1=="No sabe",]$FAC)
+a32<-sum(ENOEHOM[ENOEHOM$CS_P13_1=="No sabe",]$FAC)
+a33<-sum(ENOE[ENOE$CS_P13_1=="No sabe",]$FAC)
+
+as.matrix(c(a1,a2))
+
+install.packages("xtable")
+library(xtable)
+
+letters[1:32]
+
+?letters
+
+a+b
+ENOEMUJ <- ENOE[ENOE$SEX == "MUJER",]
+ENOEHOM <- ENOE[ENOE$SEX == "HOMBRE",]
+
+
+table(ENOEHOM$SEX)
+
 
 
 
 table(ENOE$CS_P13_1)
 #Boxplot de ingreso por hora a nivel nacional utilizando logaritmos, el logaritmo muestra valores menores a uno como negativos y no muestra a los que reportan ingreso de cero.   El boxplot muestra la mediana y los cuartiles, cada cuartil contiene alrededor del 25% de la poblaci?n. 
-NacLog <- ggplot(ENOE, aes(CS_P13_1, log(ING_X_HRS), fill = factor(SEX)))
+NacLog <- ggplot(ENOE, aes(CS_P13_1, log(ING_X_HRS)))
 NacLog <- NacLog +geom_boxplot(aes(weight = FAC)) #El factor de expansi?n lo calcula ggplot 
 NacLog <- NacLog + labs(title = "Ingreso por hora (Log), a nivel Nacional" , x = "Escolaridad" , y = "Ingreso (log)")
+NacLog
 ggsave("graphs/NacLog.png", plot = NacLog, dpi = 500, width = 14, height = 11)
-
-
 
 #Podemos obtener estos resultados a nivel Estatal para cualquier estado 
 AGS<- ggplot(data =subset(ENOE, Estado =="AGS"), aes(CS_P13_1, log(ING_X_HRS), fill = factor(SEX)))+ geom_boxplot(aes(weight = FAC))
@@ -131,82 +260,64 @@ DF <- DF + geom_boxplot(aes(weight = FAC))
 DF <-DF + labs(title = "Ingreso por hora (Log), en el Distrito Federal" , x = "Escolaridad" , y = "Ingreso (log)")
 DF
                                       ```
+#De interpretaci?n m?s directa se puede obtener un boxplot con los ingresos por hora en pesos por escolaridad. Estos son los resultados a nivel nacional. Esta forma de presentar los resultados incluye a aquellas personas que declaran tener ingresos de cero que son una basta mayoria, por ello es frecuente que la mediana se grafique en cero. Se recorta la gr?fica para no mostrar a todos los ouliers y poder apreciar las barras. 
+```{r, echo = FALSE, message = FALSE, warning = F}
+Nac <- ggplot(ENOE, aes(CS_P13_1, ING_X_HRS, fill = factor(SEX)))
+Nac <- Nac +geom_boxplot(aes(weight = FAC)) #El factor de expansi?n lo calcula ggplot 
+Nac <- Nac + labs(title = "Ingreso por hora, a nivel Nacional" , x = "Escolaridad" , y = "Ingreso")
+ylim1 = boxplot.stats(ENOE$ING_X_HRS)$stats[c(1,5)]
+Nac<- Nac + coord_cartesian(ylim = ylim1 * 10)
+Nac
+```
                                       
-                                      #De interpretaci?n m?s directa se puede obtener un boxplot con los ingresos por hora en pesos por escolaridad. Estos son los resultados a nivel nacional. Esta forma de presentar los resultados incluye a aquellas personas que declaran tener ingresos de cero que son una basta mayoria, por ello es frecuente que la mediana se grafique en cero. Se recorta la gr?fica para no mostrar a todos los ouliers y poder apreciar las barras. 
+#Una forma de solucionar las medianas en cero es el s?lo considerar a aquellas personas que tienen ingresos positivos. Probablemente esta sea la gr?fica m?s adecuada, se podr?a subsetear por alguna otra variable como condici?n de ocupaci?n. Se reduce sustancialmente el tama?o de la muestra. 
+ ```{r, echo = FALSE, message = FALSE, warning = F}
+ Nac <- ggplot(data = subset(ENOE, ING_X_HRS>0),aes(CS_P13_1, ING_X_HRS, fill = factor(SEX)))
+ Nac <- Nac +geom_boxplot(aes(weight = FAC)) #El factor de expansi?n lo calcula ggplot 
+ Nac <- Nac + labs(title = "Ingreso por hora, a nivel Nacional" , x = "Escolaridad" , y = "Ingreso")
+ ylim1 = boxplot.stats(ENOE$ING_X_HRS)$stats[c(1,5)]
+ Nac<- Nac + coord_cartesian(ylim = ylim1 * 10)
+ Nac
+ ```
+ #Podemos repetir esto para cualquier estado.
+ ```{r, echo = FALSE, message = FALSE, warning = F}
+ 
+ BC<- ggplot(data =subset(ENOE, Estado =="BC" & ING_X_HRS > 0) , aes(CS_P13_1, ING_X_HRS, fill = factor(SEX)))
+ BC<- BC+ geom_boxplot(aes(weight = FAC))
+ BC <-BC + labs(title = "Ingreso por hora en Baja California por nivel de escolaridad y Sexo" , x = "Escolaridad" , y = "Ingreso")
+ ylim1 = boxplot.stats(subset(ENOE, Estado == "BC")$ING_X_HRS)$stats[c(1,5)]
+ BC<- BC + coord_cartesian(ylim = ylim1 * 5)
+ BC #Poner en algun lugar el numero de observaciones
+ ```
                                       
-                                      ```{r, echo = FALSE, message = FALSE, warning = F}
-                                      Nac <- ggplot(ENOE, aes(CS_P13_1, ING_X_HRS, fill = factor(SEX)))
-                                      Nac <- Nac +geom_boxplot(aes(weight = FAC)) #El factor de expansi?n lo calcula ggplot 
-                                      Nac <- Nac + labs(title = "Ingreso por hora, a nivel Nacional" , x = "Escolaridad" , y = "Ingreso")
-                                      ylim1 = boxplot.stats(ENOE$ING_X_HRS)$stats[c(1,5)]
-                                      Nac<- Nac + coord_cartesian(ylim = ylim1 * 10)
-                                      Nac
-                                      ```
+ #--Vamos a ver que pasa con la informalidad por Estado
+ #Definimos como fuerza laboral a todos aquellos que aparecen en la ENOE como pertenecientes a alguna clasificaci?n de la poblaci?n ocupada (TUE2 1-7).
+ #--Ingreso de la poblaci?n por Clasificaci?n de la poblaci?n ocupada por tipo de unidad econ?mica y sexo (Ingresos reportados mayores  a cerro )
+ ```{r, echo = FALSE, message = FALSE, warning = F}
+ Nac <- ggplot(data = subset(ENOE, ING_X_HRS >0 ),aes(TUE2, ING_X_HRS, fill = factor(SEX)))
+ Nac <- Nac +geom_boxplot(aes(weight = FAC)) #El factor de expansi?n lo calcula ggplot 
+ Nac <- Nac + labs(title = "Ingreso por hora, a nivel Nacional, por tipo de unidad econ?mica" , x = "Escolaridad" , y = "Ingreso")
+ ylim1 = boxplot.stats(ENOE$ING_X_HRS)$stats[c(1,5)]
+ Nac<- Nac + coord_cartesian(ylim = ylim1 * 3.5)
+ Nac
+ ```
+ #Ingreso por hora de la poblaci?n a nivel nacional por clasificaci?n de la poblaci?n seg?n sector de actividad 
                                       
-                                      Una forma de solucionar las medianas en cero es el s?lo considerar a aquellas personas que tienen ingresos positivos. Probablemente esta sea la gr?fica m?s adecuada, se podr?a subsetear por alguna otra variable como condici?n de ocupaci?n. Se reduce sustancialmente el tama?o de la muestra. 
-                                      
-                                      ```{r, echo = FALSE, message = FALSE, warning = F}
-                                      Nac <- ggplot(data = subset(ENOE, ING_X_HRS>0),aes(CS_P13_1, ING_X_HRS, fill = factor(SEX)))
-                                      Nac <- Nac +geom_boxplot(aes(weight = FAC)) #El factor de expansi?n lo calcula ggplot 
-                                      Nac <- Nac + labs(title = "Ingreso por hora, a nivel Nacional" , x = "Escolaridad" , y = "Ingreso")
-                                      ylim1 = boxplot.stats(ENOE$ING_X_HRS)$stats[c(1,5)]
-                                      Nac<- Nac + coord_cartesian(ylim = ylim1 * 10)
-                                      Nac
-                                      ```
-                                      
-                                      Podemos repetir esto para cualquier estado.
-                                      ```{r, echo = FALSE, message = FALSE, warning = F}
-                                      
-                                      BC<- ggplot(data =subset(ENOE, Estado =="BC" & ING_X_HRS > 0) , aes(CS_P13_1, ING_X_HRS, fill = factor(SEX)))
-                                      BC<- BC+ geom_boxplot(aes(weight = FAC))
-                                      BC <-BC + labs(title = "Ingreso por hora en Baja California por nivel de escolaridad y Sexo" , x = "Escolaridad" , y = "Ingreso")
-                                      ylim1 = boxplot.stats(subset(ENOE, Estado == "BC")$ING_X_HRS)$stats[c(1,5)]
-                                      BC<- BC + coord_cartesian(ylim = ylim1 * 5)
-                                      BC #Poner en algun lugar el numero de observaciones
-                                      ```
-                                      
-                                      --Vamos a ver que pasa con la informalidad por Estado
-                                      Definimos como fuerza laboral a todos aquellos que aparecen en la ENOE como pertenecientes a alguna clasificaci?n de la poblaci?n ocupada (TUE2 1-7).
-                                      
-                                      --Ingreso de la poblaci?n por Clasificaci?n de la poblaci?n ocupada por tipo de unidad econ?mica y sexo (Ingresos reportados mayores  a cerro )
-                                      
-                                      
-                                      
-                                      ```{r, echo = FALSE, message = FALSE, warning = F}
-                                      Nac <- ggplot(data = subset(ENOE, ING_X_HRS >0 ),aes(TUE2, ING_X_HRS, fill = factor(SEX)))
-                                      Nac <- Nac +geom_boxplot(aes(weight = FAC)) #El factor de expansi?n lo calcula ggplot 
-                                      Nac <- Nac + labs(title = "Ingreso por hora, a nivel Nacional, por tipo de unidad econ?mica" , x = "Escolaridad" , y = "Ingreso")
-                                      ylim1 = boxplot.stats(ENOE$ING_X_HRS)$stats[c(1,5)]
-                                      Nac<- Nac + coord_cartesian(ylim = ylim1 * 3.5)
-                                      Nac
-                                      ```
-                                      Ingreso por hora de la poblaci?n a nivel nacional por clasificaci?n de la poblaci?n seg?n sector de actividad 
-                                      
-                                      ```{r, echo = FALSE, message = FALSE, warning = F}
-                                      Nac <- ggplot(data = subset(ENOE, ING_X_HRS >0 ),aes(RAMA_EST2, ING_X_HRS, fill = factor(SEX)))
-                                      Nac <- Nac +geom_boxplot(aes(weight = FAC)) #El factor de expansi?n lo calcula ggplot 
-                                      Nac <- Nac + labs(title = "Ingreso por hora, a nivel Nacional, por Clasificaci?n de la poblaci?n seg?n sector de actividad" , x = "Escolaridad" , y = "Ingreso")
-                                      ylim1 = boxplot.stats(ENOE$ING_X_HRS)$stats[c(1,5)]
-                                      Nac<- Nac + coord_cartesian(ylim = ylim1 * 3.5)
-                                      Nac
-                                      ```
-                                      
-                                      
-                                      
-                                      
-                                      table(ENOE$ING_X_HRS)
-                                      Cosas por hacer
-                                      
-                                      
-                                      --clasificaci?n SCIAN
-                                      
-                                      --% de informalidad por Estado 
-                                      
-                                      --% de informalidad por grupo de edad
-                                      
-                                      --% de informalidad por sector
-                                      
-                                      --% de informalidad por nivel educativo 
+ ```{r, echo = FALSE, message = FALSE, warning = F}
+ Nac <- ggplot(data = subset(ENOE, ING_X_HRS >0 ),aes(RAMA_EST2, ING_X_HRS, fill = factor(SEX)))
+ Nac <- Nac +geom_boxplot(aes(weight = FAC)) #El factor de expansi?n lo calcula ggplot 
+ Nac <- Nac + labs(title = "Ingreso por hora, a nivel Nacional, por Clasificaci?n de la poblaci?n seg?n sector de actividad" , x = "Escolaridad" , y = "Ingreso")
+ ylim1 = boxplot.stats(ENOE$ING_X_HRS)$stats[c(1,5)]
+ Nac<- Nac + coord_cartesian(ylim = ylim1 * 3.5)
+ Nac
+ ```
+ table(ENOE$ING_X_HRS)
+ Cosas por hacer
+ --clasificaci?n SCIAN
+ --% de informalidad por Estado 
+ --% de informalidad por grupo de edad
+ --% de informalidad por sector
+ --% de informalidad por nivel educativo 
                                       
                                       
                                       
