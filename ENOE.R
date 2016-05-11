@@ -6,18 +6,18 @@ library("rgeos")
 library("rgdal") 
 library("ggplot2")
 library("viridis")
-library("raster")
-library("leaflet")
-library("htmltools")
-library("htmlTable")
 library("scales")
-library("broom")
-library("tidyr")
-library("maptools")
 library("utils")
 library("foreign")
 library("RColorBrewer")
 library("survey")
+library("raster")
+library("leaflet")
+library("htmltools")
+library("htmlTable")
+library("broom")
+library("tidyr")
+library("maptools")
 #library(choroplethr)
 
 getwd()
@@ -58,13 +58,13 @@ ENOE$SEX<- factor(ENOE$SEX, labels = c("HOMBRE","MUJER")) #Sexo
 ENOE$TUE2<- factor(ENOE$TUE2, labels = c("No Clasif","EmpSocCop","Neg. noConst", "Priv", "Pub", "Sect. Informal", "TDR", "AgSubs")) 
 ENOE$RAMA_EST2<- factor(ENOE$RAMA_EST2, labels = c("No Clasif","Agricultura GSCP","Extractiva y Electricidad", "Manufactura", "Construcción", "Comercio", "Restaurantes y ServAloj", "Transportes y Com...", "Serv. Prof", "Serv. Sociales", "Sevr. Diversos", "Gobierno y Org. Int.")) 
 ENOE$E_CON <- factor(ENOE$E_CON, labels = c ("Unión libre", "Separado(a)", "Divorciado(a)", "Viudo(a)", "Casado(a)", "Soltero(a)", "No sabe"))
-ENOE$CLASE1 <- factor(ENOE$CLASE1, labels = c("No Clasificado", "PEA", "No PEA" ))
+ENOE$CLASE1 <- factor(ENOE$CLASE1, labels = c( "PEA", "No PEA" ))
 ENOE$ING7C<- factor(ENOE$ING7C, labels =c("No Clas","Hasta 1 SM", "1-2 SM", "2-3 SM", "3-5 SM", "Más de 5 SM", "No recibe ingresos", "No especificado"))  #clasificación de la población ocupada por nivel de ingreso 
 ENOE$MEDICA5C <- factor(ENOE$MEDICA5C, labels = c("No Clas", "Sin prestaciones", "Solo acceso a instituciones de salud", "Acceso a inst. de salud y otras prest.", "no tiene acceso, pero si otras prestaciones", "No especificado" ))
 ENOE$AMBITO2 <- factor (ENOE$AMBITO2, labels = c("no clas", "Sin Establecimiento" , "Con establecimiento", "Pequeños establecimientos" , "Medianos Establecimientos", "Grandes Establecimientos", "Gobierno", "Otros") )
 ENOE<- mutate(ENOE, Mujer = ifelse(SEX == "MUJER",1,0)) #Mujeres
 ENOE<- mutate(ENOE, Mujer_Pob = FAC * Mujer) #Mujeres multiplicadas por el factor de poblacion
-ENOE<- mutate(ENOE,Hombre = ifelse(SEX == "HOMBRE",1,0)) #Hombres
+ENOE<- mutate(ENOE, Hombre = ifelse(SEX == "HOMBRE",1,0)) #Hombres
 ENOE<- mutate(ENOE, Hombre_Pob = FAC * Hombre) #Hombres multiplicados por el factor de poblacion
 ENOE<- mutate(ENOE, ING_Pob_HR = ING_X_HRS * FAC)
 ENOE<- mutate(ENOE, OCUPADA = ifelse(CLASE2 ==1,1,0)) #Poblacion ocupada, para sacar ingresos promedio
@@ -98,66 +98,72 @@ ENOE$Doctorado<-ENOE$Doctorado * ENOE$FAC
 ENOE$NS<-ifelse(ENOE$CS_P13_1 == "No sabe",1,0)
 ENOE$NS<-ENOE$NS * ENOE$FAC
 #hombres y mujeres con maestría
-table(ENOE$CS_P13_1, exclude = NULL) #tabla con los datos sin el factor de expansión
+#table(ENOE$CS_P13_1, exclude = NULL) #tabla con los datos sin el factor de expansión
 
+#Con ingresos de ocupación mayores a cero
 ENOEB <- ENOE[ENOE$EDA <=75,] #ENOEB restringe la edad de 14 a 75 años para comparación de ingreso salarial 
 
-
-
+ENOEB<-ENOEB[ENOEB$INGOCUP >0,]#ojo
 
 ###Ninguna
 Ninguna <- ggplot(ENOEB[ENOEB$CS_P13_1=="Ninguna",], aes(EDA, INGOCUP, color = SEX)) #edad, Ingreso mensual, sexo, para personas con preescolar
 Ninguna <- Ninguna + geom_smooth(aes(weight = FAC))
 Ninguna <- Ninguna + xlab("Edad (14 a 75 años)") +ylab("Ingreso Mensual") + ggtitle("Ingreso Mensual declarado por Escolaridad (Ninguna) y Sexo(ENOE, IV 2015) ")
-ggsave("graphs/Ing_sexo_ninguna.png", plot = Primaria, dpi = 500, width = 14, height = 11)
+Ninguna
+ggsave("graphs/Ing_sexo_ninguna.png", plot = Ninguna, dpi = 500, width = 14, height = 11)
 
 ###
 Primaria <- ggplot(ENOEB[ENOEB$CS_P13_1=="Primaria",], aes(EDA, INGOCUP, color = SEX)) #edad, Ingreso mensual, sexo, para personas con preescolar
 Primaria <- Primaria + geom_smooth(aes(weight = FAC))
 Primaria <- Primaria + xlab("Edad (14 a 75 años)") +ylab("Ingreso Mensual") + ggtitle("Ingreso Mensual declarado por Escolaridad (Primaria) y Sexo(ENOE, IV 2015) ")
+Primaria
 ggsave("graphs/Ing_sexo_primaria.png", plot = Primaria, dpi = 500, width = 14, height = 11)
 
 ###
 Secundaria <- ggplot(ENOEB[ENOEB$CS_P13_1=="Secundaria",], aes(EDA, INGOCUP, color = SEX)) #edad, Ingreso mensual, sexo, para personas con preescolar
 Secundaria <- Secundaria + geom_smooth(aes(weight = FAC))
 Secundaria <- Secundaria + xlab("Edad (14 a 75 años)") +ylab("Ingreso Mensual")  + ggtitle("Ingreso Mensual declarado por Escolaridad (Secundaria) y Sexo(ENOE, IV 2015) ")
-ggsave("graphs/Ing_sexo_secundaria.png", plot = Primaria, dpi = 500, width = 14, height = 11)
+Secundaria
+ggsave("graphs/Ing_sexo_secundaria.png", plot = Secundaria, dpi = 500, width = 14, height = 11)
 
 ###
-Tecnica <- ggplot(ENOEB[ENOEB$CS_P13_1=="Tecnica",], aes(EDA, INGOCUP, color = SEX)) #edad, Ingreso mensual, sexo, para personas con preescolar
+Tecnica <- ggplot(ENOEB[ENOEB$CS_P13_1=="Carrera técnica",], aes(EDA, INGOCUP, color = SEX)) #edad, Ingreso mensual, sexo, para personas con preescolar
 Tecnica <- Tecnica + geom_smooth(aes(weight = FAC))
 Tecnica <- Tecnica + xlab("Edad (14 a 75 años)") +ylab("Ingreso Mensual")  + ggtitle("Ingreso Mensual declarado por Escolaridad (Carrera Técnica) y Sexo(ENOE, IV 2015) ")
-ggsave("graphs/Ing_sexo_secundaria.png", plot = Primaria, dpi = 500, width = 14, height = 11)
+Tecnica
+ggsave("graphs/Ing_sexo_tecnica.png", plot = Preparatoria, dpi = 500, width = 14, height = 11)
 
 ####
 Preparatoria <- ggplot(ENOEB[ENOEB$CS_P13_1=="Preparatoria o bach",], aes(EDA, INGOCUP, color = SEX)) #edad, Ingreso mensual, sexo, para personas con preescolar
 Preparatoria <- Preparatoria + geom_smooth(aes(weight = FAC))
 Preparatoria <- Preparatoria + xlab("Edad (14 a 75 años)") +ylab("Ingreso Mensual")  + ggtitle("Ingreso Mensual declarado por Escolaridad (Preparatoria) y Sexo(ENOE, IV 2015) ")
 Preparatoria
-ggsave("graphs/Ing_sexo_preparatoria.png", plot = Primaria, dpi = 500, width = 14, height = 11)
+ggsave("graphs/Ing_sexo_preparatoria.png", plot = Preparatoria, dpi = 500, width = 14, height = 11)
 
 #####
 Profesional <- ggplot(ENOEB[ENOEB$CS_P13_1=="Profesional",], aes(EDA, INGOCUP, color = SEX)) #edad, Ingreso mensual, sexo, para personas con preescolar
 Profesional <- Profesional + geom_smooth(aes(weight = FAC))
 Profesional <- Profesional + xlab("Edad (14 a 75 años)") +ylab("Ingreso Mensual")  + ggtitle("Ingreso Mensual declarado por Escolaridad (Profesional) y Sexo(ENOE, IV 2015) ")
-ggsave("graphs/Ing_sexo_Profesional.png", plot = Primaria, dpi = 500, width = 14, height = 11)
+Profesional
+ggsave("graphs/Ing_sexo_Profesional.png", plot = Profesional, dpi = 500, width = 14, height = 11)
 
-Maestria <- ggplot(ENOEB[ENOEB$CS_P13_1=="Maestria",], aes(EDA, INGOCUP, color = SEX)) #edad, Ingreso mensual, sexo, para personas con preescolar
-Maestria <- Maestria + geom_smooth(aes(weight = FAC))
+Maestria <- ggplot(ENOEB[ENOEB$CS_P13_1=="Maestría",], aes(EDA, INGOCUP, color = SEX)) #edad, Ingreso mensual, sexo, para personas con preescolar
+Maestria <- Maestria + stat_smooth(aes(weight = FAC))
+#Maestria <- Maestria + geom_jitter(aes(weight = FAC))
 Maestria <- Maestria + xlab("Edad (14 a 75 años)") +ylab("Ingreso Mensual")  + ggtitle("Ingreso Mensual declarado por Escolaridad (Maestría) y Sexo(ENOE, IV 2015) ")
-ggsave("graphs/Ing_sexo_Maestria.png", plot = Primaria, dpi = 500, width = 14, height = 11)
+Maestria
+ggsave("graphs/Ing_sexo_Maestria.png", plot = Maestria, dpi = 500, width = 14, height = 11)
 
 Doctorado <- ggplot(ENOEB[ENOEB$CS_P13_1=="Doctorado",], aes(EDA, INGOCUP, color = SEX)) #edad, Ingreso mensual, sexo, para personas con preescolar
-Doctorado <- Doctorado + geom_boxplot(aes(weight = FAC))
+Doctorado <- Doctorado + stat_smooth(aes(weight = FAC))
+Doctorado <- Doctorado + geom_jitter(aes(weight = FAC))
 Doctorado <- Doctorado+ xlab("Edad (14 a 75 años)") +ylab("Ingreso Mensual")  + ggtitle("Ingreso Mensual declarado por Escolaridad (Doctorado) y Sexo(ENOE, IV 2015) ")
 Doctorado
-
 ggsave("graphs/Ing_sexo_Doctorado.png", plot = Doctorado, dpi = 500, width = 14, height = 11)
 
-
-
-
-sum(table(ENOE$CS_P13_1))
+head(table(ENOE$INGOCUP))
+head(table(ENOEHOM$INGOCUP))
+head(table(ENOEMUJ$INGOCUP))
 
 
 
@@ -185,6 +191,11 @@ table(ENOE$CS_P13_1)
 #########################Tabla nivel educativo
 ENOEMUJ <- ENOE[ENOE$SEX == "MUJER",]
 ENOEHOM <- ENOE[ENOE$SEX == "HOMBRE",]
+
+sum(ENOE$FAC)
+X<-sum(ENOEMUJ$FAC)
+Y<-sum(ENOEHOM$FAC)
+X+Y
 
 a1<-sum(ENOEMUJ[ENOEMUJ$CS_P13_1=="Ninguna",]$FAC)
 b1<-sum(ENOEHOM[ENOEHOM$CS_P13_1=="Ninguna",]$FAC)
@@ -234,18 +245,134 @@ A<-as.matrix(c(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11), nrow =11 , ncol = 1)
 B<-as.matrix(c(b1,b2,b3,b4,b5,b6,b7,b8,b9,b10,b11), nrow =11 , ncol = 1)
 C<-as.matrix(c(c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11), nrow =11 , ncol = 1)
 Edu<-cbind(A,cbind(B,C))
-
 X<- colSums(Edu)
 Edu<-rbind(Edu,X)
-colnames(Edu) <- c("Hombres", "Mujeres", "Total")
+colnames(Edu) <- c("Mujeres", "Hombres", "Total")
 rownames(Edu) <- c("Ninguna", "Preescolar", "Primaria", "Secundaria" , "Preparatoria o Bach", "Normal" , "Técnica", "Profesional", "Maestría", "Doctorado", "No sabe", "Total" )
 write.csv(Edu,file="./tablas/Educacion.csv" )
 
-#población que dice ganar 0 
+##########
+#########################Tabla nivel educativo PARA PERSONAS QUE DICEN GANAR 0
+ENOE0<-ENOE[ENOE$INGOCUP==0,]
 
 
+ENOEMUJ0 <- ENOE0[ENOE0$SEX == "MUJER",]
+ENOEHOM0 <- ENOE0[ENOE0$SEX == "HOMBRE",]
+
+a1<-sum(ENOEMUJ0[ENOEMUJ0$CS_P13_1=="Ninguna",]$FAC)
+b1<-sum(ENOEHOM0[ENOEHOM0$CS_P13_1=="Ninguna",]$FAC)
+c1<-sum(ENOE0[ENOE0$CS_P13_1=="Ninguna",]$FAC)
+
+a2<-sum(ENOEMUJ0[ENOEMUJ0$CS_P13_1=="Preescolar",]$FAC)
+b2<-sum(ENOEHOM0[ENOEHOM0$CS_P13_1=="Preescolar",]$FAC)
+c2<-sum(ENOE0[ENOE0$CS_P13_1=="Preescolar",]$FAC)
+
+a3<-sum(ENOEMUJ0[ENOEMUJ0$CS_P13_1=="Primaria",]$FAC)
+b3<-sum(ENOEHOM0[ENOEHOM0$CS_P13_1=="Primaria",]$FAC)
+c3<-sum(ENOE0[ENOE0$CS_P13_1=="Primaria",]$FAC)
+
+a4<-sum(ENOEMUJ0[ENOEMUJ0$CS_P13_1=="Secundaria",]$FAC)
+b4<-sum(ENOEHOM0[ENOEHOM0$CS_P13_1=="Secundaria",]$FAC)
+c4<-sum(ENOE0[ENOE0$CS_P13_1=="Secundaria",]$FAC)
+
+a5<-sum(ENOEMUJ0[ENOEMUJ0$CS_P13_1=="Preparatoria o bach",]$FAC)
+b5<-sum(ENOEHOM0[ENOEHOM0$CS_P13_1=="Preparatoria o bach",]$FAC)
+c5<-sum(ENOE0[ENOE0$CS_P13_1=="Preparatoria o bach",]$FAC)
+
+a6<-sum(ENOEMUJ0[ENOEMUJ0$CS_P13_1=="Normal",]$FAC)
+b6<-sum(ENOEHOM0[ENOEHOM0$CS_P13_1=="Normal",]$FAC)
+c6<-sum(ENOE0[ENOE0$CS_P13_1=="Normal",]$FAC)
+
+a7<-sum(ENOEMUJ0[ENOEMUJ0$CS_P13_1=="Carrera técnica",]$FAC)
+b7<-sum(ENOEHOM0[ENOEHOM0$CS_P13_1=="Carrera técnica",]$FAC)
+c7<-sum(ENOE0[ENOE0$CS_P13_1=="Carrera técnica",]$FAC)
+
+a8<-sum(ENOEMUJ0[ENOEMUJ0$CS_P13_1=="Profesional",]$FAC)
+b8<-sum(ENOEHOM0[ENOEHOM0$CS_P13_1=="Profesional",]$FAC)
+c8<-sum(ENOE0[ENOE0$CS_P13_1=="Profesional",]$FAC)
+
+a9<-sum(ENOEMUJ0[ENOEMUJ0$CS_P13_1=="Maestría",]$FAC)
+b9<-sum(ENOEHOM0[ENOEHOM0$CS_P13_1=="Maestría",]$FAC)
+c9<-sum(ENOE0[ENOE0$CS_P13_1=="Maestría",]$FAC)
+
+a10<-sum(ENOEMUJ0[ENOEMUJ0$CS_P13_1=="Doctorado",]$FAC)
+b10<-sum(ENOEHOM0[ENOEHOM0$CS_P13_1=="Doctorado",]$FAC)
+c10<-sum(ENOE0[ENOE0$CS_P13_1=="Doctorado",]$FAC)
+
+a11<-sum(ENOEMUJ0[ENOEMUJ0$CS_P13_1=="No sabe",]$FAC)
+b11<-sum(ENOEHOM0[ENOEHOM0$CS_P13_1=="No sabe",]$FAC)
+c11<-sum(ENOE0[ENOE0$CS_P13_1=="No sabe",]$FAC)
+
+A<-as.matrix(c(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11), nrow =11 , ncol = 1)
+B<-as.matrix(c(b1,b2,b3,b4,b5,b6,b7,b8,b9,b10,b11), nrow =11 , ncol = 1)
+C<-as.matrix(c(c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11), nrow =11 , ncol = 1)
+Edu0<-cbind(A,cbind(B,C))
+
+X<- colSums(Edu0)
+Edu0<-rbind(Edu0,X)
+colnames(Edu0) <- c("Mujeres","Hombres" "Total")
+rownames(Edu0) <- c("Ninguna", "Preescolar", "Primaria", "Secundaria" , "Preparatoria o Bach", "Normal" , "Técnica", "Profesional", "Maestría", "Doctorado", "No sabe", "Total" )
+write.csv(Edu0,file="./tablas/Educacion_Cero.csv" )
+Edu0
+
+table(sum(ENOE$FAC))
+table(sum(ENOEHOM$))
+
+
+
+
+#población que dice ganar 0 por nivel educativo
+sum
 
 #Personas que ganan 0 por nivel educativo 
+
+
+###Ninguna
+Ninguna <- ggplot(ENOEB[ENOEB$CS_P13_1=="Ninguna",], aes(EDA, INGOCUP, color = SEX)) #edad, Ingreso mensual, sexo, para personas con preescolar
+Ninguna <- Ninguna + geom_smooth(aes(weight = FAC))
+Ninguna <- Ninguna + xlab("Edad (14 a 75 años)") +ylab("Ingreso Mensual") + ggtitle("Ingreso Mensual declarado por Escolaridad (Ninguna) y Sexo(ENOE, IV 2015) ")
+ggsave("graphs/Ing_sexo_ninguna.png", plot = Primaria, dpi = 500, width = 14, height = 11)
+
+###
+Primaria <- ggplot(ENOEB[ENOEB$CS_P13_1=="Primaria",], aes(EDA, INGOCUP, color = SEX)) #edad, Ingreso mensual, sexo, para personas con preescolar
+Primaria <- Primaria + geom_smooth(aes(weight = FAC))
+Primaria <- Primaria + xlab("Edad (14 a 75 años)") +ylab("Ingreso Mensual") + ggtitle("Ingreso Mensual declarado por Escolaridad (Primaria) y Sexo(ENOE, IV 2015) ")
+ggsave("graphs/Ing_sexo_primaria.png", plot = Primaria, dpi = 500, width = 14, height = 11)
+
+###
+Secundaria <- ggplot(ENOEB[ENOEB$CS_P13_1=="Secundaria",], aes(EDA, INGOCUP, color = SEX)) #edad, Ingreso mensual, sexo, para personas con preescolar
+Secundaria <- Secundaria + geom_smooth(aes(weight = FAC))
+Secundaria <- Secundaria + xlab("Edad (14 a 75 años)") +ylab("Ingreso Mensual")  + ggtitle("Ingreso Mensual declarado por Escolaridad (Secundaria) y Sexo(ENOE, IV 2015) ")
+ggsave("graphs/Ing_sexo_secundaria.png", plot = Primaria, dpi = 500, width = 14, height = 11)
+
+###
+Tecnica <- ggplot(ENOEB[ENOEB$CS_P13_1=="Tecnica",], aes(EDA, INGOCUP, color = SEX)) #edad, Ingreso mensual, sexo, para personas con preescolar
+Tecnica <- Tecnica + geom_smooth(aes(weight = FAC))
+Tecnica <- Tecnica + xlab("Edad (14 a 75 años)") +ylab("Ingreso Mensual")  + ggtitle("Ingreso Mensual declarado por Escolaridad (Carrera Técnica) y Sexo(ENOE, IV 2015) ")
+ggsave("graphs/Ing_sexo_secundaria.png", plot = Primaria, dpi = 500, width = 14, height = 11)
+
+####
+Preparatoria <- ggplot(ENOEB[ENOEB$CS_P13_1=="Preparatoria o bach",], aes(EDA, INGOCUP, color = SEX)) #edad, Ingreso mensual, sexo, para personas con preescolar
+Preparatoria <- Preparatoria + geom_smooth(aes(weight = FAC))
+Preparatoria <- Preparatoria + xlab("Edad (14 a 75 años)") +ylab("Ingreso Mensual")  + ggtitle("Ingreso Mensual declarado por Escolaridad (Preparatoria) y Sexo(ENOE, IV 2015) ")
+Preparatoria
+ggsave("graphs/Ing_sexo_preparatoria.png", plot = Primaria, dpi = 500, width = 14, height = 11)
+
+#####
+Profesional <- ggplot(ENOEB[ENOEB$CS_P13_1=="Profesional",], aes(EDA, INGOCUP, color = SEX)) #edad, Ingreso mensual, sexo, para personas con preescolar
+Profesional <- Profesional + geom_smooth(aes(weight = FAC))
+Profesional <- Profesional + xlab("Edad (14 a 75 años)") +ylab("Ingreso Mensual")  + ggtitle("Ingreso Mensual declarado por Escolaridad (Profesional) y Sexo(ENOE, IV 2015) ")
+ggsave("graphs/Ing_sexo_Profesional.png", plot = Primaria, dpi = 500, width = 14, height = 11)
+
+Maestria <- ggplot(ENOEB[ENOEB$CS_P13_1=="Maestria",], aes(EDA, INGOCUP, color = SEX)) #edad, Ingreso mensual, sexo, para personas con preescolar
+Maestria <- Maestria + geom_smooth(aes(weight = FAC))
+Maestria <- Maestria + xlab("Edad (14 a 75 años)") +ylab("Ingreso Mensual")  + ggtitle("Ingreso Mensual declarado por Escolaridad (Maestría) y Sexo(ENOE, IV 2015) ")
+ggsave("graphs/Ing_sexo_Maestria.png", plot = Primaria, dpi = 500, width = 14, height = 11)
+
+Doctorado <- ggplot(ENOEB[ENOEB$CS_P13_1=="Doctorado",], aes(EDA, INGOCUP, color = SEX)) #edad, Ingreso mensual, sexo, para personas con preescolar
+Doctorado <- Doctorado + geom_boxplot(aes(weight = FAC))
+Doctorado <- Doctorado+ xlab("Edad (14 a 75 años)") +ylab("Ingreso Mensual")  + ggtitle("Ingreso Mensual declarado por Escolaridad (Doctorado) y Sexo(ENOE, IV 2015) ")
+Doctorado
 
 
 as.vector(c(a1,a2,a3))
@@ -340,7 +467,7 @@ Nac
  ```{r, echo = FALSE, message = FALSE, warning = F}
  Nac <- ggplot(data = subset(ENOE, ING_X_HRS >0 ),aes(RAMA_EST2, ING_X_HRS, fill = factor(SEX)))
  Nac <- Nac +geom_boxplot(aes(weight = FAC)) #El factor de expansi?n lo calcula ggplot 
- Nac <- Nac + labs(title = "Ingreso por hora, a nivel Nacional, por Clasificaci?n de la poblaci?n seg?n sector de actividad" , x = "Escolaridad" , y = "Ingreso")
+ Nac <- Nac + labs(title = "Ingreso por hora, a nivel Nacional, por Clasificación de la población según sector de actividad" , x = "Escolaridad" , y = "Ingreso")
  ylim1 = boxplot.stats(ENOE$ING_X_HRS)$stats[c(1,5)]
  Nac<- Nac + coord_cartesian(ylim = ylim1 * 3.5)
  Nac
