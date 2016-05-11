@@ -180,55 +180,89 @@ table(ENOE$CS_P13_1)
 #por ocupaci[on]
 #quitando a los que ganan 0
 #hist(ENOE$EDA)
+
+
+#########################Tabla nivel educativo
 ENOEMUJ <- ENOE[ENOE$SEX == "MUJER",]
 ENOEHOM <- ENOE[ENOE$SEX == "HOMBRE",]
 
 a1<-sum(ENOEMUJ[ENOEMUJ$CS_P13_1=="Ninguna",]$FAC)
-a2<-sum(ENOEHOM[ENOEHOM$CS_P13_1=="Ninguna",]$FAC)
-a3<-sum(ENOE[ENOE$CS_P13_1=="Ninguna",]$FAC)
-a4<-sum(ENOEMUJ[ENOEMUJ$CS_P13_1=="Preescolar",]$FAC)
-a5<-sum(ENOEHOM[ENOEHOM$CS_P13_1=="Preescolar",]$FAC)
-a6<-sum(ENOE[ENOE$CS_P13_1=="Preescolar",]$FAC)
-a7<-sum(ENOEMUJ[ENOEMUJ$CS_P13_1=="Primaria",]$FAC)
-a8<-sum(ENOEHOM[ENOEHOM$CS_P13_1=="Primaria",]$FAC)
-a9<-sum(ENOE[ENOE$CS_P13_1=="Primaria",]$FAC)
-a10<-sum(ENOEMUJ[ENOEMUJ$CS_P13_1=="Secundaria",]$FAC)
-a11<-sum(ENOEHOM[ENOEHOM$CS_P13_1=="Secundaria",]$FAC)
-a12<-sum(ENOE[ENOE$CS_P13_1=="Secundaria",]$FAC)
-a13<-sum(ENOEMUJ[ENOEMUJ$CS_P13_1=="Preparatoria o bach",]$FAC)
-a14<-sum(ENOEHOM[ENOEHOM$CS_P13_1=="Preparatoria o bach",]$FAC)
-a15<-sum(ENOE[ENOE$CS_P13_1=="Preparatoria o bach",]$FAC)
-a16<-sum(ENOEMUJ[ENOEMUJ$CS_P13_1=="Normal",]$FAC)
-a17<-sum(ENOEHOM[ENOEHOM$CS_P13_1=="Normal",]$FAC)
-a18<-sum(ENOE[ENOE$CS_P13_1=="Normal",]$FAC)
-a19<-sum(ENOEMUJ[ENOEMUJ$CS_P13_1=="Carrera técnica",]$FAC)
-a20<-sum(ENOEHOM[ENOEHOM$CS_P13_1=="Carrera técnica",]$FAC)
-a21<-sum(ENOE[ENOE$CS_P13_1=="Carrera técnica",]$FAC)
-a22<-sum(ENOEMUJ[ENOEMUJ$CS_P13_1=="Profesional",]$FAC)
-a23<-sum(ENOEHOM[ENOEHOM$CS_P13_1=="Profesional",]$FAC)
-a24<-sum(ENOE[ENOE$CS_P13_1=="Profesional",]$FAC)
-a25<-sum(ENOEMUJ[ENOEMUJ$CS_P13_1=="Maestría",]$FAC)
-a26<-sum(ENOEHOM[ENOEHOM$CS_P13_1=="Maestría",]$FAC)
-a27<-sum(ENOE[ENOE$CS_P13_1=="Maestría",]$FAC)
-a28<-sum(ENOEMUJ[ENOEMUJ$CS_P13_1=="Doctorado",]$FAC)
-a29<-sum(ENOEHOM[ENOEHOM$CS_P13_1=="Doctorado",]$FAC)
-a30<-sum(ENOE[ENOE$CS_P13_1=="Doctorado",]$FAC)
-a31<-sum(ENOEMUJ[ENOEMUJ$CS_P13_1=="No sabe",]$FAC)
-a32<-sum(ENOEHOM[ENOEHOM$CS_P13_1=="No sabe",]$FAC)
-a33<-sum(ENOE[ENOE$CS_P13_1=="No sabe",]$FAC)
+b1<-sum(ENOEHOM[ENOEHOM$CS_P13_1=="Ninguna",]$FAC)
+c1<-sum(ENOE[ENOE$CS_P13_1=="Ninguna",]$FAC)
 
-as.matrix(c(a1,a2))
+a2<-sum(ENOEMUJ[ENOEMUJ$CS_P13_1=="Preescolar",]$FAC)
+b2<-sum(ENOEHOM[ENOEHOM$CS_P13_1=="Preescolar",]$FAC)
+c2<-sum(ENOE[ENOE$CS_P13_1=="Preescolar",]$FAC)
 
-install.packages("xtable")
-library(xtable)
+a3<-sum(ENOEMUJ[ENOEMUJ$CS_P13_1=="Primaria",]$FAC)
+b3<-sum(ENOEHOM[ENOEHOM$CS_P13_1=="Primaria",]$FAC)
+c3<-sum(ENOE[ENOE$CS_P13_1=="Primaria",]$FAC)
+
+a4<-sum(ENOEMUJ[ENOEMUJ$CS_P13_1=="Secundaria",]$FAC)
+b4<-sum(ENOEHOM[ENOEHOM$CS_P13_1=="Secundaria",]$FAC)
+c4<-sum(ENOE[ENOE$CS_P13_1=="Secundaria",]$FAC)
+
+a5<-sum(ENOEMUJ[ENOEMUJ$CS_P13_1=="Preparatoria o bach",]$FAC)
+b5<-sum(ENOEHOM[ENOEHOM$CS_P13_1=="Preparatoria o bach",]$FAC)
+c5<-sum(ENOE[ENOE$CS_P13_1=="Preparatoria o bach",]$FAC)
+
+a6<-sum(ENOEMUJ[ENOEMUJ$CS_P13_1=="Normal",]$FAC)
+b6<-sum(ENOEHOM[ENOEHOM$CS_P13_1=="Normal",]$FAC)
+c6<-sum(ENOE[ENOE$CS_P13_1=="Normal",]$FAC)
+
+a7<-sum(ENOEMUJ[ENOEMUJ$CS_P13_1=="Carrera técnica",]$FAC)
+b7<-sum(ENOEHOM[ENOEHOM$CS_P13_1=="Carrera técnica",]$FAC)
+c7<-sum(ENOE[ENOE$CS_P13_1=="Carrera técnica",]$FAC)
+
+a8<-sum(ENOEMUJ[ENOEMUJ$CS_P13_1=="Profesional",]$FAC)
+b8<-sum(ENOEHOM[ENOEHOM$CS_P13_1=="Profesional",]$FAC)
+c8<-sum(ENOE[ENOE$CS_P13_1=="Profesional",]$FAC)
+
+a9<-sum(ENOEMUJ[ENOEMUJ$CS_P13_1=="Maestría",]$FAC)
+b9<-sum(ENOEHOM[ENOEHOM$CS_P13_1=="Maestría",]$FAC)
+c9<-sum(ENOE[ENOE$CS_P13_1=="Maestría",]$FAC)
+
+a10<-sum(ENOEMUJ[ENOEMUJ$CS_P13_1=="Doctorado",]$FAC)
+b10<-sum(ENOEHOM[ENOEHOM$CS_P13_1=="Doctorado",]$FAC)
+c10<-sum(ENOE[ENOE$CS_P13_1=="Doctorado",]$FAC)
+
+a11<-sum(ENOEMUJ[ENOEMUJ$CS_P13_1=="No sabe",]$FAC)
+b11<-sum(ENOEHOM[ENOEHOM$CS_P13_1=="No sabe",]$FAC)
+c11<-sum(ENOE[ENOE$CS_P13_1=="No sabe",]$FAC)
+
+A<-as.matrix(c(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11), nrow =11 , ncol = 1)
+B<-as.matrix(c(b1,b2,b3,b4,b5,b6,b7,b8,b9,b10,b11), nrow =11 , ncol = 1)
+C<-as.matrix(c(c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11), nrow =11 , ncol = 1)
+Edu<-cbind(A,cbind(B,C))
+
+X<- colSums(Edu)
+Edu<-rbind(Edu,X)
+colnames(Edu) <- c("Hombres", "Mujeres", "Total")
+rownames(Edu) <- c("Ninguna", "Preescolar", "Primaria", "Secundaria" , "Preparatoria o Bach", "Normal" , "Técnica", "Profesional", "Maestría", "Doctorado", "No sabe", "Total" )
+write.csv(Edu,file="./tablas/Educacion.csv" )
+
+#población que dice ganar 0 
+
+
+
+#Personas que ganan 0 por nivel educativo 
+
+
+as.vector(c(a1,a2,a3))
+
+?sapply()
+
+?list(for (i))
+
+str_c()
+
+
 
 letters[1:32]
 
 ?letters
 
 a+b
-ENOEMUJ <- ENOE[ENOE$SEX == "MUJER",]
-ENOEHOM <- ENOE[ENOE$SEX == "HOMBRE",]
 
 
 table(ENOEHOM$SEX)
